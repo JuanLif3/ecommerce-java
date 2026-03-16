@@ -15,8 +15,8 @@ public class GlobalExceptionHandler {
 
     // * --- ATRAPAR REGLAS DE NEGOCIO ---
     // * Ejemplo: "No hay stock", "El email ya existe", "La orden está cancelada".
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessRules (IllegalAccessException ex) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessRules (IllegalArgumentException ex) {
 
         // Envolvemos el mensaje del throw en nuestro ErrorResponse DTO
         ErrorResponse error = ErrorResponse.of(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
@@ -45,10 +45,18 @@ public class GlobalExceptionHandler {
     // * --- ATRAPAR ERRORES INTERNOS (Cualquier otra cosa que no hayamos previsto) ---
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericErrors(Exception ex) {
+
+        ex.printStackTrace();
         // Aquí no le pasamos el 'ex.getMessage()' al usuario porque podría contener código SQL.
         // Le damos un mensaje genérico y limpio.
         ErrorResponse error = ErrorResponse.of("Error interno del servidor. Contacte a soporte.", HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDatabaseConstraints(Exception ex) {
+        ErrorResponse error = ErrorResponse.of("El registro ya existe o viola una regla de la base de datos.", 400);
+        return ResponseEntity.status(400).body(error);
     }
 }
