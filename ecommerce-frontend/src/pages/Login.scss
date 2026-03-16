@@ -1,0 +1,100 @@
+/* 1. LA CAJA MADRE (.login-container)
+  Ocupa toda la pantalla (100vh) y usa Flexbox para centrar
+  la tarjeta justo en el medio, tanto vertical como horizontalmente.
+*/
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; /* Centra en el eje X */
+  align-items: center;     /* Centra en el eje Y */
+  background-color: #f4f7f6; /* Un gris muy suavecito y elegante */
+
+  /* 2. LA TARJETA BLANCA (.login-card)
+    Al estar ANIDADA dentro de .login-container, SCSS sabe que solo
+    afecta a la tarjeta que está en el Login, y no a otras tarjetas de la web.
+  */
+  .login-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px; /* Bordes redondeados modernos */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Sombra suave para dar relieve 3D */
+    width: 100%;
+    max-width: 400px; /* Para que no se estire feo en pantallas gigantes */
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Mensaje de error rojo */
+    .error-message {
+      background-color: #fee2e2;
+      color: #ef4444;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    /* 3. EL FORMULARIO (.login-form) */
+    .login-form {
+      display: flex;
+      flex-direction: column; /* Apila los elementos de arriba hacia abajo */
+      gap: 1.2rem; /* Da un respiro de espacio entre cada input */
+
+      /* El grupito de "Label + Input" */
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+
+        label {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #555;
+        }
+
+        input {
+          padding: 0.8rem;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 1rem;
+          transition: border-color 0.3s; /* Animación suave al hacer clic */
+
+          /* El pseudo-estado :focus se activa cuando haces clic adentro para escribir */
+          &:focus {
+            outline: none;
+            border-color: #3498db; /* Borde azul al escribir */
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+          }
+        }
+      }
+
+      /* 4. EL BOTÓN (.btn-primary) */
+      .btn-primary {
+        margin-top: 0.5rem;
+        padding: 0.9rem;
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+
+        /* El estado :hover es cuando pasas el ratón por encima */
+        &:hover {
+          background-color: #2980b9; /* Se vuelve un azul más oscuro */
+        }
+
+        /* El estado :active es el microsegundo cuando haces el clic físico */
+        &:active {
+          transform: scale(0.98); /* Se hunde un poquito hacia adentro */
+        }
+      }
+    }
+  }
+}
