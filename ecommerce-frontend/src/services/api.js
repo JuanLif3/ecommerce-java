@@ -1,11 +1,10 @@
 import axios from 'axios';
 
+const baseURL = 'http://techstore-backend.us-east-2.elasticbeanstalk.com/api/v1';
+
 const api = axios.create({
-
-    // * Esta es la URL base del servidor Java.
-    baseURL: 'http://localhost:8080/api/v1'
-})
-
+    baseURL: baseURL,
+});
 
     // * El Interceptor de Peticiones.
     // * Esto intercepta TODAS las peticiones antes de que salgan hacia Java y les "pega" automáticamente la Pulsera VIP (el Token JWT) si es que existe.
