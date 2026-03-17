@@ -142,10 +142,18 @@ function Home() {
                                         <span className="mono-label">{product.stock > 0 ? 'ONLINE' : 'OFFLINE'}</span>
                                     </div>
 
-                                    <div className="card-image-box">
-                                        <span className="emoji-huge">💻</span>
+                                    {/* CAJA DE IMAGEN ACTUALIZADA */}
+                                    <div className="card-image-box" style={{ padding: '0', overflow: 'hidden' }}>
+                                        {product.imageUrl ? (
+                                            <img
+                                                src={product.imageUrl}
+                                                alt={product.name}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            />
+                                        ) : (
+                                            <span className="emoji-huge">💻</span>
+                                        )}
                                     </div>
-
                                     <div className="card-data">
                                         <h3 className="product-title">{product.name.toUpperCase()}</h3>
                                         <p className="product-desc">{product.description}</p>

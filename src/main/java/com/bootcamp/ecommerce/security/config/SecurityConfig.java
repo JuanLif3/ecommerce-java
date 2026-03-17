@@ -1,4 +1,5 @@
 package com.bootcamp.ecommerce.security.config;
+
 import com.bootcamp.ecommerce.security.service.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,12 +23,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ! ABRIR LAS PUERTAS A REACT (Configuración CORS)
+                // ! ABRIR LAS PUERTAS A REACT Y VERCEL (Configuración CORS Producción)
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.setAllowedOrigins(java.util.List.of("http://localhost:5173")); // El puerto de React
+                    // Permitimos cualquier origen temporalmente (Localhost y Vercel)
+                    corsConfig.setAllowedOriginPatterns(java.util.List.of("*"));
                     corsConfig.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(java.util.List.of("*"));
+                    // Permite el envío de credenciales/tokens
+                    corsConfig.setAllowCredentials(true);
                     return corsConfig;
                 }))
                 // ! Desactivamos protección CSRF
