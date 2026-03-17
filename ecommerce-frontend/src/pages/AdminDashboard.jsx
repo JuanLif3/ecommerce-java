@@ -17,6 +17,7 @@ function AdminDashboard() {
     // Estados para los formularios
     const [newCategory, setNewCategory] = useState({ name: '', description: '' });
     const [newProduct, setNewProduct] = useState({ sku: '', name: '', description: '', price: '', categoryId: '' });
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
 
     useEffect(() => {
         const role = localStorage.getItem('role');
@@ -43,6 +44,36 @@ function AdminDashboard() {
             setCategories(catRes.data);
         } catch (error) {
             toast.error('// ERROR_DE_CONEXIÓN: No se pudo leer el inventario.');
+        }
+    };
+
+    // --- SUBIR IMAGEN A CLOUDINARY ---
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setIsUploadingImage(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'techstore_preset'); // El preset que creaste
+
+        try {
+            // Reemplaza 'TU_CLOUD_NAME' por el nombre de tu nube de Cloudinary
+            const res = await fetch('https://api.cloudinary.com/v1_1/dvjfif618/image/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+
+            // Guardamos la URL segura que nos dio Cloudinary
+            setNewProduct({...newProduct, imageUrl: data.secure_url});
+            toast.success('// IMAGEN_SUBIDA_Y_ENCRIPTADA');
+
+        } catch (err) {
+            toast.error('// ERROR_AL_SUBIR_ARCHIVO');
+        } finally {
+            setIsUploadingImage(false);
         }
     };
 
@@ -181,6 +212,21 @@ function AdminDashboard() {
                         {inventoryView === 'new_product' && (
                             <form className="neo-form-box" onSubmit={handleCreateProduct}>
                                 <h3 className="text-accent">/// NUEVO_PRODUCTO</h3>
+
+                                {/* ÁREA DE IMAGEN BRUTALISTA */}
+                                <div className="input-group full-width mb-2">
+                                    <label>_IMAGEN_DEL_PRODUCTO</label>
+                                    <div className="image-upload-box">
+                                        {newProduct.imageUrl ? (
+                                            <img src={newProduct.imageUrl} alt="Preview" className="img-preview" />
+                                        ) : (
+                                            <div className="img-placeholder">
+                                                {isUploadingImage ? 'CARGANDO_BYTES...' : 'SIN_IMAGEN'}
+                                            </div>
+                                        )}
+                                        <input type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} className="file-input" />
+                                    </div>
+                                </div>
 
                                 <div className="form-grid">
                                     <div className="input-group">

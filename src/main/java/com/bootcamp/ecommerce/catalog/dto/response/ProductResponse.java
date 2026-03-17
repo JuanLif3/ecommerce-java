@@ -9,7 +9,8 @@ public record ProductResponse(
         String sku,
         String name,
         BigDecimal price,
-        String categoryName
+        String categoryName,
+        String imageUrl
 ) {
 
     public static ProductResponse fromEntity(Product product) {
@@ -18,7 +19,8 @@ public record ProductResponse(
                 product.getSku(),
                 product.getName(),
                 product.getPrice(),
-                product.getCategory().getName() // Navegamos: Producto -> Categoría -> Nombre
+                product.getCategory() != null ? product.getCategory().getName() : "Sin Categoría",
+                product.getImageUrl()
         );
     }
 }

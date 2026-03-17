@@ -29,6 +29,8 @@ function Home() {
             // ! El cartero (api) ya tiene el Token guardado, así que el guardia lo dejará pasar
             const response = await api.get('/products');
 
+            console.log("/// PRODUCTOS RECIBIDOS: ", response.data);
+
             // ! Guardamos la respuesta de Java en nuestra variable 'products'
             setProducts(response.data);
             setLoading(false); // Apagamos el "Cargando..."

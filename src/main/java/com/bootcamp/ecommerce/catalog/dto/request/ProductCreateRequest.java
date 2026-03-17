@@ -22,6 +22,8 @@ public record ProductCreateRequest(
 
         // * Necesitamos saber a qué categoría pertenece este producto
         @NotNull(message = "El ID de la categoría es obligatorio")
-        Long categoryId
+        Long categoryId,
+
+        String imageUrl
 ) {
 }

@@ -39,6 +39,7 @@ public class ProductService {
                 .createdAt(LocalDateTime.now())
                 .isActive(true)
                 .category(category)
+                .imageUrl(request.imageUrl())
                 .build();
 
         Product saveProduct = productRepository.save(product);
