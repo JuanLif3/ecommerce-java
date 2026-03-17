@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import api from '../services/api'; // Nuestro cartero configurado con Axios
+import { useNavigate } from 'react-router-dom';
 import './Login.scss';
-import {defaultAllowedOrigins} from "vite"; // Importamos su "Traje" (Estilos)
+import { toast } from 'react-toastify';
 
 function Login() {
 
     // * EL ESTADO (La memoria del componente)
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMensaje, setErrorMensaje] = useState('');
@@ -16,56 +18,67 @@ function Login() {
         setErrorMensaje('') // ! Limpiamos errores anteriores
 
         try {
-            // ! Le decimos al cartero que haga un POST al backend
-            const response = await api.post('auth/login', {
+            const response = await api.post('/auth/login', {
                 email: email,
                 password: password
             });
 
-            // ! Si java responde 200 OK, sacamos el token de la respuesta
-            const token = response.data.token;
+            // ¡NUEVO! Vamos a espiar qué nos mandó Java
+            console.log("/// DATOS DEL SERVIDOR: ", response.data);
 
-            // ! Guardamos la pulsera VIP en el navegador (localStorage)
-            localStorage.setItem('token', token);
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('role', response.data.role);
 
-            alert('Login exitoso');
+            // Bifurcación de caminos según el rol
+            if (response.data.role === 'ROLE_ADMIN') {
+                toast.success('// OVERRIDE_ADMINISTRADOR_ACEPTADO');
+                navigate('/admin');
+            } else {
+                toast.success('// ACCESO_CONCEDIDO: Bienvenido a la red.');
+                navigate('/home');
+            }
+
         } catch (error) {
-            setErrorMensaje('Credenciales incorrectas');
+            toast.error('Acceso denegado. Credenciales incorrectasn');
         }
     };
 
     return (
-        <div className="login-container">
-            <div className="login-card">
-                <h2>Iniciar sesion</h2>
+        <div className="neo-login-container">
+            <div className="neo-login-card">
+                <div className="login-header">
+                    <span className="mono-label">SYS_LOGIN v2.0</span>
+                    <div className="status-dot"></div>
+                </div>
 
-                <form className="login-form" onSubmit={handleSubmit}>
+                <h2>IDENTIFICACIÓN<span className="cursor">_</span></h2>
 
-                    <div className="form-group">
-                        <label>Email</label>
+                <form className="neo-form" onSubmit={handleSubmit}>
+                    <div className="input-group">
+                        <label>_USUARIO</label>
                         <input
-                        type="email"
-                        placeholder="correo@ejemplo.com"
-                        value={email}
-                            // Guarda esa letra en nuestra variable 'email'.
-                            // onChange se dispara cada vez que tecleas una letra.
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="user@system.com"
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label>Contraseña</label>
+                    <div className="input-group">
+                        <label>_CLAVE_DE_ACCESO</label>
                         <input
-                        type="password"
-                        placeholder="*********"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="******"
                         />
                     </div>
 
-                    <button type="submit" className="btn-primary">Entrar</button>
+                    <button type="submit" className="btn-neo-submit">
+                        [ INICIAR_SESIÓN ]
+                    </button>
                 </form>
             </div>
         </div>

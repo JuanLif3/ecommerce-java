@@ -3,7 +3,7 @@ import axios from 'axios';
 const api = axios.create({
 
     // * Esta es la URL base del servidor Java.
-    baseURL: 'https://localhost:8080/api/v1'
+    baseURL: 'http://localhost:8080/api/v1'
 })
 
 

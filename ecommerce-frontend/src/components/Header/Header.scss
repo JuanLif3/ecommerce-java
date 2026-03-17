@@ -1,0 +1,145 @@
+/* VARIABLES NEO-BRUTALISTAS (Las mismas del Home) */
+$bg-void: #050505;
+$wire-gray: #333333;
+$text-main: #ffffff;
+$neon-accent: #ccff00; /* Lima eléctrico */
+$neon-cyan: #00f0ff;
+$neon-red: #ff003c;    /* Rojo Cyberpunk para salir */
+
+.neo-header {
+  background-color: $bg-void;
+  color: $text-main;
+  padding: 1.5rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid $wire-gray;
+  font-family: 'Space Mono', monospace; /* Todo el header usa fuente de código */
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px; /* Le da un toque sutil de cuadrícula de fondo */
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateX(5px);
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: $neon-accent;
+      text-shadow: 0 0 10px rgba(204, 255, 0, 0.5); /* Resplandor */
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: $text-main;
+
+      .cursor {
+        color: $neon-cyan;
+        animation: blink 1s infinite;
+      }
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+
+    a {
+      color: $text-main;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.8rem;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+
+      /* HOVER BRUTALISTA: Sin transiciones suaves, un bloque de color duro */
+      &:hover {
+        color: $bg-void;
+        background-color: $neon-cyan;
+        border-color: $text-main;
+        box-shadow: 4px 4px 0px $neon-accent;
+        transform: translate(-2px, -2px);
+      }
+    }
+  }
+
+  .user-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    button {
+      background: transparent;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      outline: none;
+      padding: 0.5rem;
+    }
+
+    .btn-neo-cart {
+      color: $neon-accent;
+
+      .badge {
+        color: $text-main;
+      }
+
+      &:hover {
+        color: $bg-void;
+        background-color: $neon-accent;
+        box-shadow: 3px 3px 0px $text-main;
+        transform: translate(-2px, -2px);
+        .badge { color: $bg-void; }
+      }
+    }
+
+    .btn-neo-logout {
+      color: $neon-red;
+
+      &:hover {
+        color: $text-main;
+        background-color: $neon-red;
+        box-shadow: 3px 3px 0px $text-main;
+        transform: translate(-2px, -2px);
+      }
+    }
+  }
+}
+
+/* Animación del cursor del logo */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Adaptación a móviles */
+@media (max-width: 850px) {
+  .neo-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 2%;
+
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+  }
+}

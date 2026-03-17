@@ -1,100 +1,125 @@
-/* 1. LA CAJA MADRE (.login-container)
-  Ocupa toda la pantalla (100vh) y usa Flexbox para centrar
-  la tarjeta justo en el medio, tanto vertical como horizontalmente.
-*/
-.login-container {
+$bg-void: #050505;
+$wire-gray: #333333;
+$neon-accent: #ccff00;
+$neon-cyan: #00f0ff;
+$text-main: #ffffff;
+
+.neo-login-container {
   min-height: 100vh;
   display: flex;
-  justify-content: center; /* Centra en el eje X */
-  align-items: center;     /* Centra en el eje Y */
-  background-color: #f4f7f6; /* Un gris muy suavecito y elegante */
+  justify-content: center;
+  align-items: center;
+  background-color: $bg-void;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  padding: 2rem;
+  font-family: 'Space Grotesk', sans-serif;
 
-  /* 2. LA TARJETA BLANCA (.login-card)
-    Al estar ANIDADA dentro de .login-container, SCSS sabe que solo
-    afecta a la tarjeta que está en el Login, y no a otras tarjetas de la web.
-  */
-  .login-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 12px; /* Bordes redondeados modernos */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Sombra suave para dar relieve 3D */
+  .neo-login-card {
     width: 100%;
-    max-width: 400px; /* Para que no se estire feo en pantallas gigantes */
+    max-width: 450px;
+    background: $bg-void;
+    border: 2px solid $wire-gray;
+    padding: 2.5rem;
+    box-shadow: 12px 12px 0px $wire-gray;
+    transition: box-shadow 0.3s, border-color 0.3s;
+
+    &:hover {
+      border-color: $text-main;
+      box-shadow: 12px 12px 0px $neon-cyan;
+    }
+
+    .login-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid $wire-gray;
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+
+      .mono-label {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.8rem;
+        color: #888;
+      }
+
+      .status-dot {
+        width: 12px;
+        height: 12px;
+        background: $neon-accent;
+        border-radius: 50%;
+        animation: blink 2s infinite;
+      }
+    }
 
     h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 1.5rem;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: $text-main;
+      letter-spacing: -1px;
+
+      .cursor {
+        color: $neon-accent;
+        animation: blink 1s infinite;
+      }
     }
 
-    /* Mensaje de error rojo */
-    .error-message {
-      background-color: #fee2e2;
-      color: #ef4444;
-      padding: 0.75rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-
-    /* 3. EL FORMULARIO (.login-form) */
-    .login-form {
+    .neo-form {
       display: flex;
-      flex-direction: column; /* Apila los elementos de arriba hacia abajo */
-      gap: 1.2rem; /* Da un respiro de espacio entre cada input */
+      flex-direction: column;
+      gap: 1.5rem;
 
-      /* El grupito de "Label + Input" */
-      .form-group {
+      .input-group {
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.5rem;
 
         label {
+          font-family: 'Space Mono', monospace;
           font-size: 0.9rem;
-          font-weight: 600;
-          color: #555;
+          color: $neon-accent;
         }
 
         input {
-          padding: 0.8rem;
-          border: 1px solid #ddd;
-          border-radius: 6px;
+          background: transparent;
+          border: 1px solid $wire-gray;
+          padding: 1rem;
+          color: $text-main;
+          font-family: 'Space Mono', monospace;
           font-size: 1rem;
-          transition: border-color 0.3s; /* Animación suave al hacer clic */
+          outline: none;
+          transition: all 0.2s;
 
-          /* El pseudo-estado :focus se activa cuando haces clic adentro para escribir */
+          &::placeholder { color: $wire-gray; }
+
           &:focus {
-            outline: none;
-            border-color: #3498db; /* Borde azul al escribir */
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            border-color: $neon-cyan;
+            box-shadow: inset 4px 0 0 $neon-cyan; /* Barra lateral interior al escribir */
           }
         }
       }
 
-      /* 4. EL BOTÓN (.btn-primary) */
-      .btn-primary {
-        margin-top: 0.5rem;
-        padding: 0.9rem;
-        background-color: #3498db;
-        color: white;
+      .btn-neo-submit {
+        margin-top: 1rem;
+        background: transparent;
+        color: $text-main;
+        border: 2px solid $text-main;
+        font-family: 'Space Mono', monospace;
         font-weight: bold;
-        border: none;
-        border-radius: 6px;
-        font-size: 1rem;
+        font-size: 1.1rem;
+        padding: 1rem;
         cursor: pointer;
-        transition: background-color 0.3s, transform 0.1s;
+        transition: all 0.2s;
 
-        /* El estado :hover es cuando pasas el ratón por encima */
         &:hover {
-          background-color: #2980b9; /* Se vuelve un azul más oscuro */
-        }
-
-        /* El estado :active es el microsegundo cuando haces el clic físico */
-        &:active {
-          transform: scale(0.98); /* Se hunde un poquito hacia adentro */
+          background: $text-main;
+          color: $bg-void;
+          box-shadow: 6px 6px 0px $neon-accent;
+          transform: translate(-3px, -3px);
         }
       }
     }
   }
 }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }

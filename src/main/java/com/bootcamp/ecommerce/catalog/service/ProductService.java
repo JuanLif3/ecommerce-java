@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +44,13 @@ public class ProductService {
         Product saveProduct = productRepository.save(product);
 
         return ProductResponse.fromEntity(saveProduct);
+    }
+
+    public List<ProductResponse> getAllProducts() {
+        // Buscamos todos los productos en la base de datos
+        return productRepository.findAll()
+                .stream() // Abrimos una cinta transportadora (Stream)
+                .map(ProductResponse::fromEntity) // Transformamos cada entidad Product a un DTO ProductResponse
+                .collect(Collectors.toList()); // Los empaquetamos todos de vuelta en una Lista
     }
 }

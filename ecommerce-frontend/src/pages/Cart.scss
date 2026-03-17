@@ -1,0 +1,183 @@
+$bg-void: #050505;
+$bg-card: #0a0a0a;
+$wire-gray: #333333;
+$neon-accent: #ccff00;
+$neon-cyan: #00f0ff;
+$text-main: #ffffff;
+$text-dim: #888888;
+
+.neo-cart-page {
+  background-color: $bg-void;
+  min-height: 100vh;
+  font-family: 'Space Grotesk', sans-serif;
+  color: $text-main;
+  display: flex;
+  flex-direction: column;
+
+  .cart-container {
+    flex-grow: 1;
+    padding: 4rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+
+    .cart-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 2px solid $wire-gray;
+      padding-bottom: 1rem;
+      margin-bottom: 3rem;
+
+      .status-dot { width: 15px; height: 15px; background-color: $neon-accent; border-radius: 50%; animation: blink 2s infinite; }
+      h2 { font-size: 2.5rem; letter-spacing: -1px; margin: 0; }
+    }
+
+    .empty-cart-box {
+      border: 2px dashed $wire-gray;
+      padding: 5rem 2rem;
+      text-align: center;
+      background: rgba(255,255,255,0.02);
+
+      h3 { font-size: 2rem; color: $text-dim; margin-bottom: 1rem; }
+      .mono-label { font-family: 'Space Mono', monospace; color: $wire-gray; margin-bottom: 3rem; display: block; }
+
+      .btn-brutal {
+        background: transparent; border: 2px solid $text-main; color: $text-main;
+        font-family: 'Space Mono', monospace; padding: 1rem 2rem; cursor: pointer;
+        font-weight: bold; transition: all 0.2s;
+        &:hover { background: $text-main; color: $bg-void; box-shadow: 6px 6px 0px $neon-accent; }
+      }
+    }
+
+    .cart-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+
+      @media (max-width: 900px) { grid-template-columns: 1fr; }
+
+      .cart-items {
+        .table-header {
+          display: flex;
+          font-family: 'Space Mono', monospace;
+          color: $text-dim;
+          border-bottom: 2px solid $wire-gray;
+          padding-bottom: 1rem;
+          margin-bottom: 1rem;
+          font-size: 0.9rem;
+        }
+
+        .cart-row {
+          display: flex;
+          align-items: center;
+          padding: 1.5rem 0;
+          border-bottom: 1px solid #1a1a1a;
+          transition: background 0.2s;
+
+          &:hover { background: rgba(255,255,255,0.02); }
+
+          h4 { margin: 0 0 0.5rem 0; font-size: 1.2rem; }
+          .mono-label { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: $text-dim; }
+          .qty-box { background: $wire-gray; padding: 0.3rem 0.8rem; font-family: 'Space Mono', monospace; }
+          .text-cyan { color: $neon-cyan; font-family: 'Space Mono', monospace; font-size: 1.2rem; font-weight: bold; }
+        }
+
+        .col-desc { flex-grow: 1; }
+        .col-qty { width: 100px; text-align: center; }
+        .col-price { width: 120px; text-align: right; }
+      }
+
+      .checkout-details {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+
+        /* FORMULARIO DE ENVÍO BRUTALISTA */
+        .shipping-form {
+          border: 2px solid $wire-gray;
+          padding: 2rem;
+          background: #0a0a0a;
+          box-shadow: 8px 8px 0px $wire-gray;
+
+          h3 { margin-top: 0; margin-bottom: 2rem; letter-spacing: -1px; }
+
+          .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+
+            @media (max-width: 600px) { grid-template-columns: 1fr; }
+
+            .full-width { grid-column: 1 / -1; }
+          }
+
+          .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            label { font-family: 'Space Mono', monospace; color: $text-dim; font-size: 0.85rem; }
+
+            input {
+              background: #000;
+              border: 1px solid $wire-gray;
+              color: $text-main;
+              padding: 0.8rem;
+              font-family: 'Space Mono', monospace;
+              outline: none;
+
+              &:focus { border-color: $neon-accent; box-shadow: inset 2px 0 0 $neon-accent; }
+              &::placeholder { color: $wire-gray; }
+            }
+          }
+        }
+      }
+
+      .receipt-box {
+        border: 2px solid $wire-gray;
+        padding: 2rem;
+        background: $bg-card;
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+        box-shadow: 8px 8px 0px $wire-gray;
+
+        .receipt-title { color: $neon-accent; font-family: 'Space Mono', monospace; margin-top: 0; margin-bottom: 2rem; font-size: 1.2rem; }
+
+        .receipt-lines {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          font-family: 'Space Mono', monospace;
+
+          .line { display: flex; justify-content: space-between; align-items: flex-end; }
+          .mono-label { color: $text-dim; font-size: 0.9rem; }
+          .divider { border-bottom: 2px dashed $wire-gray; margin: 1rem 0; }
+          .total { font-size: 1.5rem; font-weight: bold; margin-top: 1rem; .text-accent { color: $neon-accent; } }
+        }
+
+        .btn-checkout {
+          width: 100%;
+          margin-top: 3rem;
+          background: $neon-cyan;
+          color: $bg-void;
+          border: none;
+          padding: 1.2rem;
+          font-family: 'Space Mono', monospace;
+          font-weight: bold;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: all 0.2s;
+
+          &:hover:not(:disabled) {
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0px $neon-accent;
+          }
+
+          &:disabled { background: $wire-gray; color: $text-dim; cursor: not-allowed; }
+        }
+      }
+    }
+  }
+}

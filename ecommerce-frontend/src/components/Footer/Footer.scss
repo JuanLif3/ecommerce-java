@@ -1,0 +1,74 @@
+$bg-void: #050505;
+$wire-gray: #333333;
+$neon-accent: #ccff00;
+$neon-cyan: #00f0ff;
+$text-main: #ffffff;
+$text-dim: #888888;
+
+.neo-footer {
+  background-color: $bg-void;
+  border-top: 2px solid $wire-gray;
+  padding: 4rem 5% 2rem 5%;
+  color: $text-main;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-top: 4rem;
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    border-bottom: 2px solid $wire-gray;
+    padding-bottom: 3rem;
+
+    .footer-brand {
+      h2 {
+        font-size: 2rem;
+        margin: 0 0 1rem 0;
+        letter-spacing: -1px;
+        .cursor { color: $neon-cyan; animation: blink 1s infinite; }
+      }
+      .mono-text {
+        font-family: 'Space Mono', monospace;
+        color: $text-dim;
+        font-size: 0.9rem;
+      }
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .mono-title {
+        font-family: 'Space Mono', monospace;
+        color: $neon-accent;
+        font-weight: bold;
+      }
+
+      a {
+        color: $text-dim;
+        font-family: 'Space Mono', monospace;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+
+        &:hover {
+          color: $text-main;
+          text-shadow: 2px 2px 0px $neon-cyan;
+          transform: translateX(5px); /* Se mueve un poco a la derecha al pasar el mouse */
+        }
+      }
+    }
+  }
+
+  .footer-bottom {
+    padding-top: 2rem;
+    text-align: center;
+
+    .mono-text {
+      font-family: 'Space Mono', monospace;
+      color: $wire-gray;
+      font-size: 0.8rem;
+    }
+  }
+}

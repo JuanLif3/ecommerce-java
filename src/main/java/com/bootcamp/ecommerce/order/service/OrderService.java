@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -92,5 +94,13 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.fromEntity(savedOrder);
+    }
+
+    // * OBTENER TODAS LAS ÓRDENES
+    public List<OrderResponse> getAllOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(OrderResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 }

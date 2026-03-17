@@ -1,0 +1,271 @@
+/* VARIABLES NEO-BRUTALISTAS */
+$bg-void: #050505;
+$wire-gray: #333333;
+$text-main: #ffffff;
+$text-dim: #888888;
+$neon-accent: #ccff00; /* Lima eléctrico muy agresivo */
+$neon-cyan: #00f0ff;
+
+.neo-home {
+  background-color: $bg-void;
+  min-height: 100vh;
+  /* Tipografías separadas: Grotesk para títulos, Mono para datos */
+  font-family: 'Space Grotesk', sans-serif;
+  color: $text-main;
+  overflow-x: hidden;
+}
+
+/* MARQUEE (CINTA DESLIZANTE) */
+.marquee-container {
+  background-color: $neon-accent;
+  color: $bg-void;
+  padding: 0.5rem 0;
+  overflow: hidden;
+  border-bottom: 2px solid $text-main;
+  border-top: 2px solid $text-main;
+
+  .marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+
+    span { padding-right: 50px; }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+/* BENTO BOX HERO */
+.bento-hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 200px 200px;
+  gap: 1rem;
+  padding: 2rem 5%;
+  margin-top: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 150px 150px;
+  }
+
+  .bento-main {
+    grid-row: span 2;
+    background: url('https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=1920&auto=format&fit=crop') center/cover;
+    position: relative;
+    border: 2px solid $wire-gray;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    /* Efecto de ruido/oscurecimiento encima de la imagen */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to top, #050505 10%, transparent);
+    }
+
+    h1 {
+      position: relative;
+      font-size: 5rem;
+      line-height: 0.9;
+      margin: 0 0 1rem 0;
+      text-transform: uppercase;
+
+      .outline-text {
+        -webkit-text-stroke: 2px $neon-accent;
+        color: transparent; /* Texto hueco cibernético */
+      }
+    }
+
+    p {
+      position: relative;
+      font-family: 'Space Mono', monospace;
+      color: $text-dim;
+      font-size: 1.1rem;
+      max-width: 500px;
+    }
+  }
+
+  .bento-side {
+    border: 2px solid $wire-gray;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background-color: #0a0a0a;
+    transition: background 0.3s;
+
+    &:hover { background-color: $wire-gray; }
+
+    .mono-label {
+      font-family: 'Space Mono', monospace;
+      color: $neon-accent;
+      font-size: 0.8rem;
+    }
+
+    h3 { font-size: 2rem; margin: 0; }
+  }
+}
+
+/* CATÁLOGO WIREFRAME */
+.neo-catalog {
+  padding: 4rem 5%;
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid $wire-gray;
+    padding-bottom: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+    .status-dot {
+      width: 15px; height: 15px;
+      background-color: $neon-accent;
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    h2 { margin: 0; flex-grow: 1; font-size: 2rem; letter-spacing: -1px; }
+
+    .neo-search {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: transparent;
+      border: 1px solid $wire-gray;
+      padding: 0.5rem 1rem;
+
+      .mono-label { color: $neon-cyan; font-family: 'Space Mono', monospace; }
+
+      input {
+        background: transparent;
+        border: none;
+        color: $text-main;
+        font-family: 'Space Mono', monospace;
+        outline: none;
+        &::placeholder { color: $wire-gray; }
+      }
+    }
+  }
+
+  /* GRILLA ASIMÉTRICA */
+  .brutal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+
+    /* Magia CSS: La primera tarjeta siempre será más grande */
+    .brutal-card:first-child {
+      @media (min-width: 768px) {
+        grid-column: span 2;
+        .card-image-box { height: 350px !important; }
+      }
+    }
+
+    .brutal-card {
+      background-color: transparent;
+
+      .card-wireframe {
+        border: 2px solid $wire-gray;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.1s, box-shadow 0.1s;
+
+        /* Efecto BRUTALISTA en Hover: Sombras duras en vez de difuminadas */
+        &:hover {
+          transform: translate(-6px, -6px);
+          box-shadow: 6px 6px 0px $neon-accent;
+          border-color: $text-main;
+        }
+
+        .card-top-bar {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5rem 1rem;
+          border-bottom: 2px solid $wire-gray;
+          background-color: rgba(255,255,255,0.02);
+
+          .mono-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: $text-dim;
+          }
+        }
+
+        .card-image-box {
+          height: 200px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 5rem;
+          border-bottom: 2px solid $wire-gray;
+          background: repeating-linear-gradient(
+                          45deg,
+                          transparent,
+                          transparent 10px,
+                          rgba(255,255,255,0.02) 10px,
+                          rgba(255,255,255,0.02) 20px
+          ); /* Patrón de rayas de precaución cibernético */
+        }
+
+        .card-data {
+          padding: 1.5rem;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+
+          .product-title { margin: 0 0 1rem 0; font-size: 1.5rem; letter-spacing: -0.5px; }
+          .product-desc { color: $text-dim; font-family: 'Space Mono', monospace; font-size: 0.85rem; flex-grow: 1; }
+
+          .brutal-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 2rem;
+
+            .price-tag {
+              display: flex;
+              align-items: flex-start;
+              font-family: 'Space Mono', monospace;
+
+              .currency { color: $neon-cyan; font-size: 1rem; margin-top: 0.3rem;}
+              .amount { font-size: 2.5rem; font-weight: bold; line-height: 1; }
+            }
+
+            .btn-brutal {
+              background: transparent;
+              color: $text-main;
+              border: 2px solid $text-main;
+              font-family: 'Space Mono', monospace;
+              font-weight: bold;
+              padding: 0.8rem 1.2rem;
+              cursor: pointer;
+              transition: background 0.2s, color 0.2s;
+
+              &:hover {
+                background: $text-main;
+                color: $bg-void;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Animaciones globales */
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }

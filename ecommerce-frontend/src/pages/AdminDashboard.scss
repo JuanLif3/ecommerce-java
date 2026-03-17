@@ -1,0 +1,423 @@
+$bg-void: #050505;
+$bg-card: #0a0a0a;
+$wire-gray: #333333;
+$neon-accent: #ccff00;
+$neon-cyan: #00f0ff;
+$neon-red: #ff003c;
+$text-main: #ffffff;
+$text-dim: #888888;
+
+.neo-admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: $bg-void;
+  color: $text-main;
+  font-family: 'Space Grotesk', sans-serif;
+
+  /* LA BARRA LATERAL */
+  .admin-sidebar {
+    width: 280px;
+    background-color: $bg-card;
+    border-right: 2px solid $wire-gray;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      border-bottom: 2px solid $wire-gray;
+      padding-bottom: 1rem;
+
+      .icon { font-size: 2rem; }
+      h2 { margin: 0; font-size: 1.5rem; color: $neon-accent; letter-spacing: -1px; }
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex-grow: 1;
+
+      button {
+        background: transparent;
+        border: 1px solid transparent;
+        color: $text-dim;
+        font-family: 'Space Mono', monospace;
+        text-align: left;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 1rem;
+
+        &:hover {
+          color: $text-main;
+          border-color: $wire-gray;
+          background: rgba(255,255,255,0.02);
+        }
+
+        &.active {
+          color: $bg-void;
+          background: $neon-cyan;
+          border-color: $text-main;
+          box-shadow: 4px 4px 0px $wire-gray;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .btn-exit {
+      background: transparent;
+      border: 2px solid $neon-red;
+      color: $neon-red;
+      font-family: 'Space Mono', monospace;
+      padding: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: auto;
+      transition: all 0.2s;
+
+      &:hover {
+        background: $neon-red;
+        color: $text-main;
+        box-shadow: 4px 4px 0px $text-main;
+      }
+    }
+  }
+
+  /* EL PANEL PRINCIPAL */
+  .admin-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    .admin-topbar {
+      height: 60px;
+      border-bottom: 2px solid $wire-gray;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 1rem;
+      background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+
+      .mono-label { font-family: 'Space Mono', monospace; color: $text-dim; font-size: 0.8rem; }
+      .status-dot { width: 10px; height: 10px; border-radius: 50%; background: $neon-accent; animation: blink 2s infinite; }
+    }
+
+    .admin-content-area {
+      padding: 3rem;
+      flex-grow: 1;
+      overflow-y: auto;
+
+      .admin-panel {
+        animation: fadeIn 0.3s ease-out;
+
+        h2 { font-size: 2.5rem; margin-bottom: 2rem; letter-spacing: -1px; text-transform: uppercase; }
+
+        /* CLASES ÚTILES */
+        .mono-label { font-family: 'Space Mono', monospace; font-size: 0.9rem; color: $text-dim; }
+        .text-cyan { color: $neon-cyan; }
+        .text-accent { color: $neon-accent; }
+        .text-red { color: $neon-red; }
+        .mt-2 { margin-top: 1rem; display: block; }
+
+        /* TABLERO GENERAL (OVERVIEW) */
+        &.overview-panel {
+          .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+
+            .stat-box {
+              border: 2px solid $wire-gray;
+              padding: 1.5rem;
+              background: $bg-card;
+
+              .stat-value { font-size: 3rem; font-weight: bold; margin: 1rem 0; font-family: 'Space Mono', monospace; }
+
+              .stat-chart {
+                height: 8px;
+                background: $wire-gray;
+                width: 100%;
+
+                .bar { height: 100%; background: $neon-cyan; }
+                .bg-accent { background: $neon-accent; }
+                .bg-red { background: $neon-red; }
+              }
+            }
+          }
+
+          /* CAJA TIPO TERMINAL LINUX */
+          .terminal-box {
+            border: 2px solid $wire-gray;
+            background: #000;
+            font-family: 'Space Mono', monospace;
+
+            .terminal-header {
+              background: $text-main;
+              color: $bg-void;
+              padding: 0.5rem 1rem;
+              font-weight: bold;
+              font-size: 0.9rem;
+            }
+
+            .terminal-body {
+              padding: 1.5rem;
+              font-size: 0.9rem;
+              line-height: 1.5;
+
+              p { margin: 0 0 0.5rem 0; color: #0f0; } /* Verde terminal clásico */
+              .text-red { color: $neon-red !important; }
+              .cursor-blink { display: inline-block; width: 10px; background: #0f0; animation: blink 1s infinite; }
+            }
+          }
+        }
+
+        /* BOTONES BRUTALISTAS DE ADMIN */
+        .btn-brutal-action {
+          background: $neon-accent;
+          color: $bg-void;
+          border: none;
+          padding: 1rem 2rem;
+          font-family: 'Space Mono', monospace;
+          font-weight: bold;
+          font-size: 1.1rem;
+          cursor: pointer;
+          box-shadow: 4px 4px 0px $wire-gray;
+          transition: all 0.2s;
+
+          &:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px $text-main;
+          }
+        }
+
+        .panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+          border-bottom: 2px solid $wire-gray;
+          padding-bottom: 1rem;
+          flex-wrap: wrap;
+          gap: 1rem;
+
+          .action-buttons {
+            display: flex;
+            gap: 1rem;
+          }
+        }
+
+        /* LA TABLA HACKER */
+        .neo-table-container {
+          border: 2px solid $wire-gray;
+          background: #000;
+          overflow-x: auto;
+          box-shadow: 6px 6px 0px $wire-gray; /* Sombra brutalista extra */
+
+          .neo-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+
+            th {
+              background: $wire-gray;
+              color: $text-main; /* Texto blanco en el encabezado gris */
+              text-align: left;
+              padding: 1.2rem 1rem;
+              font-weight: bold;
+              letter-spacing: 1px;
+            }
+
+            td {
+              padding: 1rem;
+              border-bottom: 1px solid $wire-gray;
+              transition: background 0.2s;
+            }
+
+            /* Efecto Hover estilo Terminal */
+            tr:hover td {
+              background: rgba(204, 255, 0, 0.05); /* Un brillo lima muy sutil al pasar el mouse */
+              border-bottom: 1px solid $neon-accent;
+            }
+          }
+        }
+
+        /* BOTONES AUXILIARES (Como el de Actualizar Radar o Cancelar) */
+        .btn-brutal-alt {
+          background: transparent;
+          color: $text-main;
+          border: 2px dashed $wire-gray;
+          font-family: 'Space Mono', monospace;
+          font-weight: bold;
+          padding: 0.8rem 1.2rem;
+          cursor: pointer;
+          transition: all 0.2s;
+
+          &:hover {
+            border-color: $neon-cyan;
+            color: $neon-cyan;
+            background: rgba(0, 240, 255, 0.05);
+            box-shadow: 4px 4px 0px $wire-gray;
+            transform: translate(-2px, -2px);
+          }
+
+          &.text-red {
+            color: $neon-red;
+            border-color: $neon-red;
+            &:hover {
+              background: rgba(255, 0, 60, 0.1);
+              box-shadow: 4px 4px 0px $neon-red;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* COLORES EXTRA */
+$text-green: #00ff00;
+
+.text-green { color: $text-green !important; }
+.text-center { text-align: center; }
+
+/* PANEL DE INVENTARIO */
+.inventory-panel {
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid $wire-gray;
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+
+  .btn-brutal-alt {
+    background: transparent;
+    color: $text-main;
+    border: 2px dashed $wire-gray;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $text-main;
+      background: rgba(255,255,255,0.05);
+    }
+    &.text-red {
+      color: $neon-red;
+      border-color: $neon-red;
+      &:hover { background: rgba(255,0,60,0.1); }
+    }
+  }
+
+  /* TABLA NEO-BRUTALISTA */
+  .neo-table-container {
+    border: 2px solid $wire-gray;
+    background: #000;
+    overflow-x: auto;
+
+    .neo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+
+      th {
+        background: $wire-gray;
+        color: $bg-void;
+        text-align: left;
+        padding: 1rem;
+        font-weight: bold;
+      }
+
+      td {
+        padding: 1rem;
+        border-bottom: 1px solid $wire-gray;
+      }
+
+      tr:hover td {
+        background: rgba(255,255,255,0.05);
+      }
+    }
+  }
+
+  /* FORMULARIOS ESTILO TERMINAL */
+  .neo-form-box {
+    border: 2px solid $wire-gray;
+    padding: 2rem;
+    background: #0a0a0a;
+    box-shadow: 8px 8px 0px $wire-gray;
+
+    h3 { margin-top: 0; margin-bottom: 2rem; letter-spacing: -1px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+
+      .full-width { grid-column: span 2; }
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label { font-family: 'Space Mono', monospace; color: $text-dim; font-size: 0.85rem; }
+
+      input, select, textarea {
+        background: #000;
+        border: 1px solid $wire-gray;
+        color: $text-main;
+        padding: 0.8rem;
+        font-family: 'Space Mono', monospace;
+        outline: none;
+
+        &:focus { border-color: $neon-accent; box-shadow: inset 2px 0 0 $neon-accent; }
+      }
+
+      textarea { resize: vertical; }
+
+      /* Estilo oscuro para las opciones del select */
+      select option { background: #000; color: $text-main; }
+    }
+
+    .btn-brutal-submit {
+      background: transparent;
+      color: $text-main;
+      border: 2px solid $neon-cyan;
+      padding: 1rem 2rem;
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 2rem;
+      transition: all 0.2s;
+
+      &:hover {
+        background: $neon-cyan;
+        color: $bg-void;
+        box-shadow: 6px 6px 0px $wire-gray;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

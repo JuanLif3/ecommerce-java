@@ -22,7 +22,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // ! Desactivamos protección CSRF (no se usa en APIs REST puras)
+                // ! ABRIR LAS PUERTAS A REACT (Configuración CORS)
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfig.setAllowedOrigins(java.util.List.of("http://localhost:5173")); // El puerto de React
+                    corsConfig.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfig.setAllowedHeaders(java.util.List.of("*"));
+                    return corsConfig;
+                }))
+                // ! Desactivamos protección CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // ! LA LISTA BLANCA (Rutas Públicas)
                         .requestMatchers("/api/v1/auth/**").permitAll() // Login y Registro
