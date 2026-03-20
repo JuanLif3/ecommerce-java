@@ -454,4 +454,45 @@ $text-green: #00ff00;
   }
 }
 
+.table-header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .cyber-search {
+    background: #000;
+    border: 1px solid $neon-cyan;
+    color: $text-main;
+    padding: 0.6rem 1rem;
+    font-family: 'Space Mono', monospace;
+    outline: none;
+    width: 300px;
+    transition: 0.3s;
+
+    &::placeholder { color: $wire-gray; }
+    &:focus { box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); border-color: $text-main; }
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Scrollbar personalizado para la terminal falsa */
+.terminal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.terminal-body::-webkit-scrollbar-track {
+  background: #000;
+  border-left: 1px solid #333;
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background: $neon-cyan;
+}
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

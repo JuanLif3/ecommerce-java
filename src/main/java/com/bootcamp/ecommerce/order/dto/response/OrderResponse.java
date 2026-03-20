@@ -9,6 +9,7 @@ import java.util.List;
 public record OrderResponse(
         Long orderId,
         String customerName,
+        String customerEmail,
         String customerPhone,
         String shippingAddress,
         BigDecimal totalAmount,
@@ -20,6 +21,7 @@ public record OrderResponse(
         return  new OrderResponse(
                 order.getId(),
                 order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName(),
+                order.getCustomer().getEmail(),
                 order.getCustomer().getPhone(), // Extraemos el teléfono del cliente
                 order.getShippingAddress(), // Extraemos la dirección del pedido
                 order.getTotalAmount(),
