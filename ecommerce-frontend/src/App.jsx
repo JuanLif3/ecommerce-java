@@ -7,6 +7,7 @@ import Cart from './pages/Cart';
 import { CartProvider } from './context/CartContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PaymentCommit from './pages/PaymentCommit';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/" element={<Navigate to="/login" replace />} />
+                    <Route path="/payment/commit" element={<PaymentCommit />} />
                 </Routes>
             </BrowserRouter>
             <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />

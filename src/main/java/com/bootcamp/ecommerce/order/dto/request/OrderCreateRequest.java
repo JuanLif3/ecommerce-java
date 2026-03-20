@@ -8,6 +8,7 @@ import java.util.List;
 public record OrderCreateRequest(
 
         @NotEmpty(message = "La orden debe tener al menos un producto")
-        List<OrderItemRequest> items
+        List<OrderItemRequest> items,
+        String shippingAddress
 ) {
 }

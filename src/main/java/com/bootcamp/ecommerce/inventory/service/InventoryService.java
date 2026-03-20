@@ -19,7 +19,6 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
 
-    // * Crear el inventario inicial en CERO cuando se lanza un nuevo producto
     @Transactional
     public InventoryResponse initializeInventory(Long productId) {
         Product product = productRepository.findById(productId)
@@ -31,27 +30,40 @@ public class InventoryService {
 
         Inventory inventory = Inventory.builder()
                 .product(product)
-                .stock(0)
+                .stock(100)
                 .lastUpdated(LocalDateTime.now())
                 .build();
 
         return InventoryResponse.fromEntity(inventoryRepository.save(inventory));
     }
 
-    // * Sumar o restar stock (El metodo critico que usara el carrito de compras)
+    // * Sumar o restar stock (El método crítico que usará el carrito de compras)
     @Transactional
     public InventoryResponse updateStock(Long productId, StockUpdateRequest request) {
-        Inventory inventory = inventoryRepository.findByProductId(productId)
-                .orElseThrow(() -> new IllegalArgumentException("No hay inventario para este producto"));
 
-        // Logica suma / resta
-        int currentSotck = inventory.getStock();
-        int newStock = currentSotck + request.quantity();
+        // ! MAGIA A PRUEBA DE BALAS:
+        // Si el inventario no existe (porque el producto es viejo), lo creamos sobre la marcha con 100 unidades
+        Inventory inventory = inventoryRepository.findByProductId(productId)
+                .orElseGet(() -> {
+                    Product product = productRepository.findById(productId)
+                            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+                    Inventory newInventory = Inventory.builder()
+                            .product(product)
+                            .stock(100) // Le regalamos 100 de stock inicial
+                            .lastUpdated(LocalDateTime.now())
+                            .build();
+
+                    return inventoryRepository.save(newInventory);
+                });
+
+        // Lógica suma / resta
+        int currentStock = inventory.getStock();
+        int newStock = currentStock + request.quantity(); // quantity viene negativo desde el carrito (-1, -2, etc)
 
         // La base de datos nunca puede quedar con stock negativo.
-        // Nuestra Red de Seguridad global (GlobalExceptionHandler) atrapará este error.
         if (newStock < 0) {
-            throw new IllegalArgumentException("Operacion ivnalida: Stock insuficiente");
+            throw new IllegalArgumentException("Operación inválida: Stock insuficiente");
         }
 
         inventory.setStock(newStock);

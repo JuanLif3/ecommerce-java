@@ -50,6 +50,7 @@ public class OrderService {
                 .status(OrderStatus.PENDING)
                 .totalAmount(BigDecimal.ZERO) // Empezamos en cero
                 .createdAt(LocalDateTime.now())
+                .shippingAddress(request.shippingAddress())
                 .build();
 
         BigDecimal runningTotal = BigDecimal.ZERO;
@@ -102,5 +103,15 @@ public class OrderService {
                 .stream()
                 .map(OrderResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    // * MÉTODO PARA EMPAQUETAR EL PEDIDO
+    @Transactional
+    public OrderResponse markOrderAsShipped(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
+
+        order.setStatus(OrderStatus.SHIPPED); // Cambiamos a enviado/empaquetado
+        return OrderResponse.fromEntity(orderRepository.save(order));
     }
 }

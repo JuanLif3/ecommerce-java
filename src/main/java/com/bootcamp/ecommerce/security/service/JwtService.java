@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "NDQ1MzQ2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NDU2NA==";
+    // Extraemos la clave desde el application.properties
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     // * Extraer el email del token
     public String extractUsername(String token) {
@@ -32,7 +35,7 @@ public class JwtService {
                 .compact();
     }
 
-    // * Validar el token (Saber si no ha exiparado y perteneces al usaurio)
+    // * Validar el token (Saber si no ha expirado y pertenece al usuario)
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -63,7 +66,8 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        // Usamos la variable inyectada "secretKey" en lugar de la constante
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

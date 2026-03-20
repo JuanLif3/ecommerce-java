@@ -245,6 +245,38 @@ $text-dim: #888888;
               background: rgba(204, 255, 0, 0.05); /* Un brillo lima muy sutil al pasar el mouse */
               border-bottom: 1px solid $neon-accent;
             }
+
+            /* NUEVO: ESTILO PARA FILAS INACTIVAS Y BOTONES DE COMANDO */
+            .offline-row {
+              opacity: 0.4;
+              td { text-decoration: line-through; }
+              td.table-actions, td:nth-child(4) { text-decoration: none; }
+            }
+
+            .table-actions {
+              display: flex;
+              gap: 1rem;
+
+              .action-btn {
+                background: none;
+                border: none;
+                font-family: 'Space Mono', monospace;
+                font-weight: bold;
+                cursor: pointer;
+                transition: color 0.2s;
+
+                &.edit-btn {
+                  color: $neon-cyan;
+                  &:hover { color: #fff; }
+                  &:disabled { color: $text-dim; cursor: not-allowed; }
+                }
+
+                &.kill-btn {
+                  color: $neon-red;
+                  &:hover { color: #fff; background: $neon-red; }
+                }
+              }
+            }
           }
         }
 
@@ -326,37 +358,6 @@ $text-green: #00ff00;
     }
   }
 
-  /* TABLA NEO-BRUTALISTA */
-  .neo-table-container {
-    border: 2px solid $wire-gray;
-    background: #000;
-    overflow-x: auto;
-
-    .neo-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.9rem;
-
-      th {
-        background: $wire-gray;
-        color: $bg-void;
-        text-align: left;
-        padding: 1rem;
-        font-weight: bold;
-      }
-
-      td {
-        padding: 1rem;
-        border-bottom: 1px solid $wire-gray;
-      }
-
-      tr:hover td {
-        background: rgba(255,255,255,0.05);
-      }
-    }
-  }
-
   /* FORMULARIOS ESTILO TERMINAL */
   .neo-form-box {
     border: 2px solid $wire-gray;
@@ -390,6 +391,7 @@ $text-green: #00ff00;
         outline: none;
 
         &:focus { border-color: $neon-accent; box-shadow: inset 2px 0 0 $neon-accent; }
+        &:disabled { color: #555; background: #111; cursor: not-allowed; }
       }
 
       textarea { resize: vertical; }

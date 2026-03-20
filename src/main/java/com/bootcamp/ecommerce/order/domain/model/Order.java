@@ -43,4 +43,10 @@ public class Order {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "shipping_address")
+    private String shippingAddress;
+
+    @Column(name = "transbank_token")
+    private String transbankToken;
 }

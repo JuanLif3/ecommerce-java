@@ -1,12 +1,20 @@
 package com.bootcamp.ecommerce.payment.service;
 
+import cl.transbank.common.IntegrationApiKeys;
+import cl.transbank.common.IntegrationCommerceCodes;
+import cl.transbank.common.IntegrationType;
+import cl.transbank.webpay.common.WebpayOptions;
+import cl.transbank.webpay.webpayplus.WebpayPlus;
+import cl.transbank.webpay.webpayplus.responses.WebpayPlusTransactionCommitResponse;
+import cl.transbank.webpay.webpayplus.responses.WebpayPlusTransactionCreateResponse;
 import com.bootcamp.ecommerce.order.domain.model.Order;
 import com.bootcamp.ecommerce.order.domain.model.OrderStatus;
 import com.bootcamp.ecommerce.order.repository.OrderRepository;
-import com.bootcamp.ecommerce.payment.dto.request.PaymentWebhookRequest;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -14,27 +22,51 @@ public class PaymentService {
 
     private final OrderRepository orderRepository;
 
-    @Transactional
-    public void processPaymentWebhook(PaymentWebhookRequest request) {
+    // Inicializamos Transbank en modo INTEGRACIÓN (Pruebas)
+    private final WebpayPlus.Transaction tx = new WebpayPlus.Transaction(
+            new WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST)
+    );
 
-        // Buscamos la orden que Transbank nos dice que fue pagada
-        Order order = orderRepository.findById(request.orderId())
+    // 1. Crear la transacción y enviarla a Transbank
+    public Map<String, String> initTransaction(Long orderId, String returnUrl) throws Exception {
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
 
-        // Solo podemos pagar ordenes pendientes
-        if(order.getStatus() != OrderStatus.PENDING) {
-            throw new IllegalArgumentException("La orden ya fue procesada o cancelada");
-        }
+        String buyOrder = "ORDEN-" + order.getId();
+        // CORRECCIÓN: Usamos el ID de la orden para la sesión, así evitamos el error del Customer
+        String sessionId = "SESSION-" + order.getId();
+        double amount = order.getTotalAmount().doubleValue(); // Debe ser double para TBK
 
-        // Cambiamos el estado dependiendo de lo que diga el banco
-        if ("SUCCESS".equalsIgnoreCase(request.paymentStatus())) {
-            order.setStatus(OrderStatus.PAID);
-            System.out.println("Orden completada: " + order.getId() + " pagada.");
+        // Llamada a Transbank
+        WebpayPlusTransactionCreateResponse response = tx.create(buyOrder, sessionId, amount, returnUrl);
+
+        // Guardamos el token en la orden
+        order.setTransbankToken(response.getToken());
+        orderRepository.save(order);
+
+        // Devolvemos la URL y el Token a React
+        Map<String, String> result = new HashMap<>();
+        result.put("url", response.getUrl());
+        result.put("token", response.getToken());
+        return result;
+    }
+
+    // 2. Confirmar el pago cuando el usuario vuelve de Transbank
+    public Order confirmPayment(String tokenWs) throws Exception {
+        // Confirmamos en Transbank
+        WebpayPlusTransactionCommitResponse response = tx.commit(tokenWs);
+
+        // Buscamos la orden por el token
+        Order order = orderRepository.findByTransbankToken(tokenWs)
+                .orElseThrow(() -> new IllegalArgumentException("Orden inválida"));
+
+        // Validamos si el pago fue exitoso (ResponseCode 0 = Aprobado)
+        if (response.getResponseCode() == 0) {
+            order.setStatus(OrderStatus.PAID); // Cambia el estado a PAGADO
         } else {
             order.setStatus(OrderStatus.CANCELLED);
-            System.out.println("Pago rechazado: " +order.getId() + " marcada como cancelada");
         }
 
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 }

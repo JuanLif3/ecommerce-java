@@ -3,16 +3,84 @@ $bg-void: #050505;
 $wire-gray: #333333;
 $text-main: #ffffff;
 $text-dim: #888888;
-$neon-accent: #ccff00; /* Lima eléctrico muy agresivo */
+$neon-accent: #ccff00; /* Lima eléctrico */
 $neon-cyan: #00f0ff;
+$neon-red: #ff003c;
+$text-green: #00ff00;
 
 .neo-home {
   background-color: $bg-void;
   min-height: 100vh;
-  /* Tipografías separadas: Grotesk para títulos, Mono para datos */
   font-family: 'Space Grotesk', sans-serif;
   color: $text-main;
   overflow-x: hidden;
+}
+
+/* CLASES DE UTILIDAD CIBERPUNK */
+.text-cyan { color: $neon-cyan !important; }
+.text-accent { color: $neon-accent !important; }
+.text-red { color: $neon-red !important; }
+.text-green { color: $text-green !important; }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.blink { animation: blink 1s infinite; }
+
+/* Efecto Scanlines CRT */
+.scanlines {
+  position: relative;
+  &::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+}
+
+/* EFECTO GLITCH EN TITULO */
+.glitch-title {
+  position: relative;
+  &::before, &::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: $bg-void;
+  }
+  &::before {
+    left: 2px;
+    text-shadow: -2px 0 $neon-red;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  }
+  &::after {
+    left: -2px;
+    text-shadow: -2px 0 $neon-cyan;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+  }
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(21px, 9999px, 93px, 0); }
+  20% { clip: rect(85px, 9999px, 42px, 0); }
+  40% { clip: rect(100px, 9999px, 86px, 0); }
+  60% { clip: rect(38px, 9999px, 2px, 0); }
+  80% { clip: rect(12px, 9999px, 73px, 0); }
+  100% { clip: rect(61px, 9999px, 16px, 0); }
+}
+@keyframes glitch-anim-2 {
+  0% { clip: rect(55px, 9999px, 80px, 0); }
+  20% { clip: rect(21px, 9999px, 14px, 0); }
+  40% { clip: rect(74px, 9999px, 98px, 0); }
+  60% { clip: rect(98px, 9999px, 45px, 0); }
+  80% { clip: rect(11px, 9999px, 11px, 0); }
+  100% { clip: rect(8px, 9999px, 56px, 0); }
 }
 
 /* MARQUEE (CINTA DESLIZANTE) */
@@ -36,24 +104,20 @@ $neon-cyan: #00f0ff;
     span { padding-right: 50px; }
   }
 
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 }
 
 /* BENTO BOX HERO */
 .bento-hero {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: 200px 200px;
-  gap: 1rem;
-  padding: 2rem 5%;
-  margin-top: 2rem;
+  grid-template-rows: 250px 250px;
+  gap: 1.5rem;
+  padding: 3rem 5%;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 150px 150px;
+    grid-template-rows: auto 200px 200px;
   }
 
   .bento-main {
@@ -65,200 +129,191 @@ $neon-cyan: #00f0ff;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
 
-    /* Efecto de ruido/oscurecimiento encima de la imagen */
     &::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(to top, #050505 10%, transparent);
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.9) 10%, rgba(5,5,5,0.2));
+      z-index: 1;
     }
 
     h1 {
-      position: relative;
-      font-size: 5rem;
-      line-height: 0.9;
-      margin: 0 0 1rem 0;
-      text-transform: uppercase;
-
-      .outline-text {
-        -webkit-text-stroke: 2px $neon-accent;
-        color: transparent; /* Texto hueco cibernético */
-      }
+      position: relative; z-index: 3; font-size: 5rem; line-height: 0.9; margin: 0 0 1rem 0; text-transform: uppercase;
+      .outline-text { -webkit-text-stroke: 2px $neon-accent; color: transparent; }
     }
-
-    p {
-      position: relative;
-      font-family: 'Space Mono', monospace;
-      color: $text-dim;
-      font-size: 1.1rem;
-      max-width: 500px;
-    }
+    p { position: relative; z-index: 3; font-family: 'Space Mono', monospace; color: $neon-cyan; font-size: 1.1rem; max-width: 500px; }
   }
 
   .bento-side {
+    position: relative;
     border: 2px solid $wire-gray;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 1.5rem;
     background-color: #0a0a0a;
-    transition: background 0.3s;
+    transition: all 0.3s;
+    overflow: hidden;
 
-    &:hover { background-color: $wire-gray; }
-
-    .mono-label {
-      font-family: 'Space Mono', monospace;
-      color: $neon-accent;
-      font-size: 0.8rem;
+    &.interactable {
+      cursor: crosshair;
+      &:hover {
+        background-color: rgba(204, 255, 0, 0.1);
+        border-color: $neon-accent;
+        transform: scale(1.02);
+        .overlay-scan { top: 100%; }
+      }
     }
 
-    h3 { font-size: 2rem; margin: 0; }
+    .overlay-scan {
+      position: absolute; top: -100%; left: 0; width: 100%; height: 50px;
+      background: linear-gradient(to bottom, transparent, rgba(204,255,0,0.3), transparent);
+      transition: top 0.5s ease-in-out;
+      pointer-events: none;
+    }
+
+    .mono-label { font-family: 'Space Mono', monospace; color: $neon-accent; font-size: 0.8rem; z-index: 2;}
+    h3 { font-size: 2rem; margin: 0; z-index: 2; }
+  }
+}
+
+/* DIAGNÓSTICOS DEL SISTEMA (BARRA DE STATS) */
+.sys-diagnostics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 0 5% 4rem 5%;
+
+  .diag-box {
+    border: 1px solid $wire-gray;
+    background: rgba(255,255,255,0.02);
+    padding: 1.5rem;
+    text-align: center;
+    border-left: 4px solid $neon-cyan;
+
+    .mono-label { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: $text-dim; display: block; margin-bottom: 0.5rem; }
+    h3 { margin: 0; font-size: 1.5rem; font-family: 'Space Mono', monospace; }
+  }
+}
+
+/* NODOS DE ACCESO RAPIDO */
+.access-nodes {
+  padding: 0 5% 4rem 5%;
+
+  .section-title {
+    border-bottom: 2px solid $wire-gray;
+    padding-bottom: 1rem; margin-bottom: 2rem;
+    h2 { font-size: 1.5rem; color: $text-dim; letter-spacing: 2px; margin: 0; }
+  }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+
+    .node-card {
+      border: 2px solid $wire-gray;
+      padding: 2rem;
+      background: #0a0a0a;
+      text-align: center;
+      transition: 0.3s;
+
+      &:hover { border-color: $neon-cyan; box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); transform: translateY(-5px); }
+
+      .node-icon { font-size: 3rem; margin-bottom: 1rem; filter: grayscale(100%) contrast(200%); }
+      h4 { font-size: 1.2rem; margin: 0 0 0.5rem 0; letter-spacing: 1px; }
+      p { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: $text-dim; margin-bottom: 1.5rem; }
+
+      .btn-node {
+        background: transparent; border: 1px dashed $wire-gray; color: $text-main;
+        padding: 0.5rem 1rem; font-family: 'Space Mono', monospace; cursor: crosshair;
+        width: 100%; transition: 0.2s;
+        &:hover { background: $neon-cyan; color: $bg-void; border-style: solid; }
+      }
+    }
+  }
+}
+
+/* TERMINAL DECORATIVA */
+.cyber-terminal-deco {
+  padding: 0 5% 4rem 5%;
+
+  .terminal-window {
+    border: 2px solid $wire-gray;
+    background: #000;
+    border-radius: 4px;
+    box-shadow: 10px 10px 0px rgba(255,255,255,0.05);
+
+    .terminal-bar {
+      background: $wire-gray; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem;
+      .dot { width: 12px; height: 12px; border-radius: 50%; background: #555; }
+      .title { margin-left: 1rem; font-family: 'Space Mono', monospace; font-size: 0.8rem; color: #aaa; }
+    }
+
+    .terminal-body {
+      padding: 2rem; font-family: 'Space Mono', monospace; font-size: 0.9rem; line-height: 1.8;
+      p { margin: 0; color: #888; }
+    }
   }
 }
 
 /* CATÁLOGO WIREFRAME */
 .neo-catalog {
-  padding: 4rem 5%;
+  padding: 0 5% 5rem 5%;
 
   .terminal-header {
-    display: flex;
-    align-items: center;
-    border-bottom: 2px solid $wire-gray;
-    padding-bottom: 1rem;
-    margin-bottom: 3rem;
-    flex-wrap: wrap;
-    gap: 2rem;
+    display: flex; align-items: center; border-bottom: 2px solid $wire-gray;
+    padding-bottom: 1rem; margin-bottom: 3rem; flex-wrap: wrap; gap: 2rem;
 
-    .status-dot {
-      width: 15px; height: 15px;
-      background-color: $neon-accent;
-      border-radius: 50%;
-      animation: blink 2s infinite;
-    }
-
+    .status-dot { width: 15px; height: 15px; background-color: $neon-accent; border-radius: 50%; animation: blink 2s infinite; }
     h2 { margin: 0; flex-grow: 1; font-size: 2rem; letter-spacing: -1px; }
 
     .neo-search {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: transparent;
-      border: 1px solid $wire-gray;
-      padding: 0.5rem 1rem;
-
+      display: flex; align-items: center; gap: 1rem; background: transparent; border: 1px solid $wire-gray; padding: 0.5rem 1rem;
       .mono-label { color: $neon-cyan; font-family: 'Space Mono', monospace; }
-
-      input {
-        background: transparent;
-        border: none;
-        color: $text-main;
-        font-family: 'Space Mono', monospace;
-        outline: none;
-        &::placeholder { color: $wire-gray; }
-      }
+      input { background: transparent; border: none; color: $text-main; font-family: 'Space Mono', monospace; outline: none; width: 250px; }
     }
   }
 
-  /* GRILLA ASIMÉTRICA */
   .brutal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2.5rem;
 
-    /* Magia CSS: La primera tarjeta siempre será más grande */
-    .brutal-card:first-child {
-      @media (min-width: 768px) {
-        grid-column: span 2;
-        .card-image-box { height: 350px !important; }
-      }
-    }
+    .error-box { grid-column: 1 / -1; border: 2px dashed $neon-red; padding: 3rem; text-align: center; }
 
     .brutal-card {
       background-color: transparent;
 
       .card-wireframe {
-        border: 2px solid $wire-gray;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.1s, box-shadow 0.1s;
+        border: 2px solid $wire-gray; height: 100%; display: flex; flex-direction: column; transition: 0.2s; background: #080808;
 
-        /* Efecto BRUTALISTA en Hover: Sombras duras en vez de difuminadas */
         &:hover {
-          transform: translate(-6px, -6px);
-          box-shadow: 6px 6px 0px $neon-accent;
-          border-color: $text-main;
+          transform: translate(-8px, -8px); box-shadow: 8px 8px 0px $neon-accent; border-color: $text-main;
+          .image-scanline { top: 100%; }
+          .cyber-image { filter: grayscale(0%); transform: scale(1.05); }
         }
 
-        .card-top-bar {
-          display: flex;
-          justify-content: space-between;
-          padding: 0.5rem 1rem;
-          border-bottom: 2px solid $wire-gray;
-          background-color: rgba(255,255,255,0.02);
-
-          .mono-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            color: $text-dim;
-          }
-        }
+        .card-top-bar { display: flex; justify-content: space-between; padding: 0.5rem 1rem; border-bottom: 2px solid $wire-gray; background-color: rgba(255,255,255,0.02); .mono-label { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: $text-dim; } }
 
         .card-image-box {
-          height: 200px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 5rem;
-          border-bottom: 2px solid $wire-gray;
-          background: repeating-linear-gradient(
-                          45deg,
-                          transparent,
-                          transparent 10px,
-                          rgba(255,255,255,0.02) 10px,
-                          rgba(255,255,255,0.02) 20px
-          ); /* Patrón de rayas de precaución cibernético */
+          height: 250px; position: relative; display: flex; justify-content: center; align-items: center; border-bottom: 2px solid $wire-gray; overflow: hidden;
+
+          .cyber-image { transition: 0.5s; filter: grayscale(80%) contrast(120%); }
+          .image-scanline { position: absolute; top: -100%; left: 0; width: 100%; height: 30px; background: rgba(0, 240, 255, 0.3); box-shadow: 0 0 10px rgba(0, 240, 255, 0.5); transition: 0.6s ease-in-out; pointer-events: none; }
         }
 
         .card-data {
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
-
-          .product-title { margin: 0 0 1rem 0; font-size: 1.5rem; letter-spacing: -0.5px; }
-          .product-desc { color: $text-dim; font-family: 'Space Mono', monospace; font-size: 0.85rem; flex-grow: 1; }
+          padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;
+          .product-title { margin: 0 0 0.5rem 0; font-size: 1.4rem; letter-spacing: -0.5px; }
+          .product-desc { color: $text-dim; font-family: 'Space Mono', monospace; font-size: 0.85rem; flex-grow: 1; line-height: 1.4; }
 
           .brutal-action {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 2rem;
+            display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1.5rem; border-top: 1px dashed $wire-gray; padding-top: 1rem;
 
-            .price-tag {
-              display: flex;
-              align-items: flex-start;
-              font-family: 'Space Mono', monospace;
-
-              .currency { color: $neon-cyan; font-size: 1rem; margin-top: 0.3rem;}
-              .amount { font-size: 2.5rem; font-weight: bold; line-height: 1; }
-            }
+            .price-tag { display: flex; align-items: flex-start; font-family: 'Space Mono', monospace; .currency { color: $neon-cyan; font-size: 1rem; margin-top: 0.3rem;} .amount { font-size: 2.2rem; font-weight: bold; line-height: 1; } }
 
             .btn-brutal {
-              background: transparent;
-              color: $text-main;
-              border: 2px solid $text-main;
-              font-family: 'Space Mono', monospace;
-              font-weight: bold;
-              padding: 0.8rem 1.2rem;
-              cursor: pointer;
-              transition: background 0.2s, color 0.2s;
-
-              &:hover {
-                background: $text-main;
-                color: $bg-void;
-              }
+              background: transparent; color: $text-main; border: 2px solid $text-main; font-family: 'Space Mono', monospace; font-weight: bold; padding: 0.8rem 1.2rem; cursor: crosshair; transition: 0.2s;
+              &:hover { background: $neon-accent; color: $bg-void; border-color: $neon-accent; }
             }
           }
         }
@@ -267,5 +322,147 @@ $neon-cyan: #00f0ff;
   }
 }
 
-/* Animaciones globales */
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+.card-wireframe {
+  cursor: pointer; // Indica que la tarjeta entera se puede hacer click
+}
+
+.neo-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.neo-modal-content {
+  background: #0a0a0a;
+  border: 2px solid $neon-cyan;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 10px 10px 0px rgba(0, 240, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+
+  /* Scrollbar personalizado para el modal */
+  &::-webkit-scrollbar { width: 8px; }
+  &::-webkit-scrollbar-track { background: #000; }
+  &::-webkit-scrollbar-thumb { background: $neon-cyan; }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 2px solid $wire-gray;
+    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 240, 255, 0.05) 10px, rgba(0, 240, 255, 0.05) 20px);
+
+    h2 { margin: 0; font-size: 1.8rem; color: $text-main; text-transform: uppercase; }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: $neon-red;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      &:hover { color: #fff; text-shadow: 0 0 10px $neon-red; transform: scale(1.1); }
+    }
+  }
+
+  .modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+
+    @media (max-width: 768px) { grid-template-columns: 1fr; }
+
+    /* CARRUSEL CIBERNÉTICO */
+    .carousel-container {
+      position: relative;
+      overflow: hidden;
+      border-right: 2px solid $wire-gray;
+      background: #000;
+      min-height: 400px;
+
+      @media (max-width: 768px) { border-right: none; border-bottom: 2px solid $wire-gray; min-height: 300px; }
+
+      .carousel-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); // Transición suave hacia la derecha
+
+        .carousel-image {
+          min-width: 100%;
+          height: 100%;
+          object-fit: cover;
+          filter: contrast(110%);
+        }
+
+        .no-image {
+          min-width: 100%; display: flex; justify-content: center; align-items: center;
+          font-family: 'Space Mono', monospace; color: $wire-gray; font-size: 2rem;
+        }
+      }
+
+      .carousel-indicators {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+
+        .indicator {
+          width: 30px; height: 4px; background: rgba(255,255,255,0.3);
+          transition: 0.3s;
+          &.active { background: $neon-accent; box-shadow: 0 0 8px $neon-accent; }
+        }
+      }
+    }
+
+    /* DETALLES DEL PRODUCTO */
+    .product-details-panel {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+
+      .detail-row {
+        display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px dashed $wire-gray; padding-bottom: 0.8rem; margin-bottom: 0.8rem;
+        font-family: 'Space Mono', monospace; font-size: 0.9rem;
+      }
+
+      .desc-box {
+        margin-top: 1rem; flex-grow: 1;
+        .mono-label { color: $neon-cyan; display: block; margin-bottom: 0.5rem; }
+        p { font-family: 'Space Mono', monospace; color: $text-dim; font-size: 0.9rem; line-height: 1.6; }
+      }
+
+      .modal-footer-action {
+        margin-top: 2rem;
+        border-top: 2px solid $wire-gray;
+        padding-top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .price-huge { margin: 0; font-size: 3rem; color: $neon-accent; font-family: 'Space Mono', monospace; text-align: right; }
+
+        .btn-brutal-action {
+          background: $neon-accent; color: #000; border: none; padding: 1rem;
+          font-family: 'Space Mono', monospace; font-weight: bold; font-size: 1.1rem;
+          cursor: pointer; transition: 0.2s; box-shadow: 4px 4px 0px $wire-gray;
+          &:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px $text-main; }
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ProductCreateRequest(
         @NotBlank(message = "EL SKU es obligatorio")
@@ -24,6 +25,6 @@ public record ProductCreateRequest(
         @NotNull(message = "El ID de la categoría es obligatorio")
         Long categoryId,
 
-        String imageUrl
+        List<String> imageUrls
 ) {
 }

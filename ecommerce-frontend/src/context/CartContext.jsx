@@ -33,15 +33,22 @@ export function CartProvider({ children }) {
         toast.success(`// [ + ] ${product.name} AÑADIDO`);
     };
 
-    // ! Función para vaciar el carrito (la usaremos luego al pagar)
+    // ! NUEVO: Función para eliminar un producto específico
+    const removeFromCart = (productId) => {
+        setCart((prevCart) => prevCart.filter(item => item.id !== productId));
+        toast.error(`// ELEMENTO ELIMINADO DEL BÚFER`);
+    };
+
+    // ! Función para vaciar el carrito
     const clearCart = () => {
         setCart([]);
-        localStorage.removeItem('neo_cart'); // También lo borramos del disco
+        localStorage.removeItem('neo_cart');
     };
 
     // * Compartimos el carrito y las funciones con toda la app
+    // ¡Asegúrate de agregar removeFromCart aquí abajo!
     return (
-        <CartContext.Provider value={{ cart, addToCart, clearCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
             {children}
         </CartContext.Provider>
     );

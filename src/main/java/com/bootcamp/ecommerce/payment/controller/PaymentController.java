@@ -1,11 +1,11 @@
 package com.bootcamp.ecommerce.payment.controller;
 
-import com.bootcamp.ecommerce.payment.dto.request.PaymentWebhookRequest;
 import com.bootcamp.ecommerce.payment.service.PaymentService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/payments")
@@ -14,13 +14,25 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    // Este es nuestro "Teléfono Rojo". Escucha los avisos del banco.
-    @PostMapping("/webhook")
-    public ResponseEntity<String> receiveWebhook(@Valid @RequestBody PaymentWebhookRequest request) {
-        paymentService.processPaymentWebhook(request);
+    @PostMapping("/init/{orderId}")
+    public ResponseEntity<Map<String, String>> initPayment(@PathVariable Long orderId) {
+        try {
+            // URL a la que volverá Transbank después de pagar
+            String returnUrl = "http://localhost:5173/payment/commit";
+            return ResponseEntity.ok(paymentService.initTransaction(orderId, returnUrl));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
-        // A los bancos (Webhooks) solo les importa que les respondamos un "200 OK"
-        // para saber que recibimos el mensaje. No necesitan un JSON complejo de vuelta.
-        return ResponseEntity.ok("Webhook procesado correctamente");
+    @PostMapping("/commit")
+    public ResponseEntity<?> commitPayment(@RequestParam("token_ws") String tokenWs) {
+        try {
+            // Confirmamos en la base de datos y Transbank
+            paymentService.confirmPayment(tokenWs);
+            return ResponseEntity.ok().build(); // Devuelve 200 OK si todo sale bien
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al confirmar el pago");
+        }
     }
 }

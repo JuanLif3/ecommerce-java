@@ -9,6 +9,8 @@ import java.util.List;
 public record OrderResponse(
         Long orderId,
         String customerName,
+        String customerPhone,
+        String shippingAddress,
         BigDecimal totalAmount,
         String status,
         LocalDateTime createdAt,
@@ -18,10 +20,11 @@ public record OrderResponse(
         return  new OrderResponse(
                 order.getId(),
                 order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName(),
+                order.getCustomer().getPhone(), // Extraemos el teléfono del cliente
+                order.getShippingAddress(), // Extraemos la dirección del pedido
                 order.getTotalAmount(),
                 order.getStatus().name(),
                 order.getCreatedAt(),
-                // Transformamos la lista de Entidades a lista de DTOs
                 order.getItems().stream().map(OrderItemResponse::fromEntity).toList()
         );
     }

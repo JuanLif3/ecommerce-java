@@ -27,4 +27,9 @@ public class OrderController {
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
+
+    @PostMapping("/{id}/ship")
+    public ResponseEntity<OrderResponse> shipOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.markOrderAsShipped(id));
+    }
 }

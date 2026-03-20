@@ -8,11 +8,12 @@ import Footer from '../components/Footer/Footer';
 import './Cart.scss';
 
 function Cart() {
-    const { cart, clearCart } = useContext(CartContext);
+    const { cart, clearCart, removeFromCart } = useContext(CartContext);
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // ¡NUEVO! Datos del cliente para el envío
+
+    // Datos del cliente para el envío
     const [customerData, setCustomerData] = useState({
         firstName: '',
         lastName: '',
@@ -28,7 +29,7 @@ function Cart() {
     const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     const handleCheckout = async (e) => {
-        e.preventDefault(); // Evitamos que el formulario recargue la página
+        e.preventDefault();
         if (cart.length === 0) return;
 
         setIsProcessing(true);
@@ -38,42 +39,65 @@ function Cart() {
             const customerPayload = {
                 firstName: customerData.firstName,
                 lastName: customerData.lastName,
-                email: customerData.email, // Añadido
+                email: customerData.email,
                 phone: customerData.phone,
-                street: customerData.street, // Aplanado (sin estar dentro de address{})
-                city: customerData.city,     // Aplanado
-                zipCode: customerData.zipCode // Aplanado
+                street: customerData.street,
+                city: customerData.city,
+                zipCode: customerData.zipCode
             };
 
             try {
-                // Intentamos registrar al cliente
                 await api.post('/customers', customerPayload);
                 console.log("/// PERFIL DE CLIENTE CREADO/ACTUALIZADO");
             } catch (custError) {
-                // Si el cliente YA EXISTE, Java devolverá un error.
-                // Podemos ignorarlo y continuar con la compra, o manejarlo si es un error de validación.
                 console.log("/// AVISO: El perfil de cliente podría ya existir o hubo un problema menor.", custError.response?.data);
             }
 
             // 2. SEGUNDO: ENVIAMOS LA ORDEN DE COMPRA (Order)
+            // Agrupamos la calle, ciudad y código postal en un solo String para el "shippingAddress" de Java
+            const direccionCompleta = `${customerData.street}, ${customerData.city}, CP: ${customerData.zipCode}`;
+
             const orderPayload = {
                 items: cart.map(item => ({
                     productoId: item.id,
                     quantity: item.quantity
-                }))
+                })),
+                shippingAddress: direccionCompleta // ¡NUEVO! Enviamos la dirección al backend
             };
 
-            const response = await api.post('/orders', orderPayload);
+            const orderResponse = await api.post('/orders', orderPayload);
+            const orderId = orderResponse.data.orderId;
 
-            toast.success(`// TRANSACCIÓN APROBADA. ORDEN #${response.data.id || 'CONFIRMADA'}`);
+            console.log(`/// ORDEN #${orderId} GENERADA EN LA BASE DE DATOS`);
+            toast.info('// INICIANDO_PROTOCOLO_TRANSBANK...');
+
+            // 3. TERCERO: PEDIR EL LINK DE PAGO A TRANSBANK
+            const tbkRes = await api.post(`/payments/init/${orderId}`);
+
+            // 4. MAGIA: TELETRANSPORTAR AL USUARIO A WEBPAY
+            // Creamos un formulario invisible en el HTML
+            const form = document.createElement('form');
+            form.action = tbkRes.data.url; // La URL segura de Transbank
+            form.method = 'POST';
+
+            // Le inyectamos el Token (La llave de la transacción)
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'token_ws';
+            input.value = tbkRes.data.token;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+
+            // Limpiamos el carrito local porque el usuario ya se va a pagar
             clearCart();
-            navigate('/home');
+
+            // ¡Despegue! Esto recargará la página hacia Transbank
+            form.submit();
 
         } catch (error) {
             console.error("/// REPORTE DE RECHAZO DEL SERVIDOR:", error.response?.data);
-            const javaErrorMessage = error.response?.data?.message || error.response?.data || "DATOS_CORRUPTOS";
-            toast.error(`// ERROR: ${JSON.stringify(javaErrorMessage)}`);
-        } finally {
+            toast.error(`// ERROR_CRÍTICO: No se pudo conectar con la pasarela de pago.`);
             setIsProcessing(false);
         }
     };
@@ -108,7 +132,7 @@ function Cart() {
                                 </div>
 
                                 {cart.map((item, index) => (
-                                    <div key={index} className="cart-row">
+                                    <div key={index} className="cart-row" style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
                                         <div className="col-desc">
                                             <h4>{item.name}</h4>
                                             <span className="mono-label">ID:{item.id} // P.U: ${item.price}</span>
@@ -116,14 +140,34 @@ function Cart() {
                                         <div className="col-qty">
                                             <span className="qty-box">x{item.quantity}</span>
                                         </div>
-                                        <div className="col-price">
+                                        <div className="col-price" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                             <span className="text-cyan">${(item.price * item.quantity).toFixed(2)}</span>
+
+                                            {/* NUEVO BOTÓN DE ELIMINAR */}
+                                            <button
+                                                type="button"
+                                                onClick={() => removeFromCart(item.id)}
+                                                style={{
+                                                    background: 'transparent',
+                                                    border: '1px solid #ff003c',
+                                                    color: '#ff003c',
+                                                    fontFamily: '"Space Mono", monospace',
+                                                    fontWeight: 'bold',
+                                                    cursor: 'pointer',
+                                                    padding: '0.2rem 0.5rem',
+                                                    transition: '0.2s'
+                                                }}
+                                                onMouseOver={(e) => { e.target.style.background = '#ff003c'; e.target.style.color = '#fff'; }}
+                                                onMouseOut={(e) => { e.target.style.background = 'transparent'; e.target.style.color = '#ff003c'; }}
+                                            >
+                                                [ X ]
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* ¡NUEVO! Formulario de Envío Brutalista */}
+                            {/* Formulario de Envío Brutalista */}
                             <div className="shipping-form neo-form-box">
                                 <h3 className="text-accent">/// DATOS_DE_ENVÍO</h3>
 
@@ -174,13 +218,12 @@ function Cart() {
                                 </div>
                             </div>
 
-                            {/* El botón ahora es tipo "submit" para que valide el formulario antes de enviarlo */}
                             <button
                                 type="submit"
                                 className="btn-checkout"
                                 disabled={isProcessing}
                             >
-                                {isProcessing ? '[ PROCESANDO_HASH... ]' : '[ EJECUTAR_PAGO ]'}
+                                {isProcessing ? '[ CONECTANDO_A_LA_RED... ]' : '[ EJECUTAR_PAGO_SEGURO ]'}
                             </button>
                         </div>
                     </form>
