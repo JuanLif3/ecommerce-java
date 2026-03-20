@@ -18,7 +18,7 @@ public class PaymentController {
     public ResponseEntity<Map<String, String>> initPayment(@PathVariable Long orderId) {
         try {
             // URL a la que volverá Transbank después de pagar
-            String returnUrl = "http://localhost:5173/payment/commit";
+            String returnUrl = "https://https://ecommerce-java-bpja.vercel.app/payment/commit";
             return ResponseEntity.ok(paymentService.initTransaction(orderId, returnUrl));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
