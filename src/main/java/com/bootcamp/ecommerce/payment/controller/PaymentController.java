@@ -2,6 +2,7 @@ package com.bootcamp.ecommerce.payment.controller;
 
 import com.bootcamp.ecommerce.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +15,17 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
+    // ! MAGIA: Inyectamos la URL del frontend desde las variables de entorno.
+    // Si la variable no existe (como en tu PC local), usará localhost:5173 por defecto.
+    @Value("${frontend.url:http://localhost:5173}")
+    private String frontendUrl;
+
     @PostMapping("/init/{orderId}")
     public ResponseEntity<Map<String, String>> initPayment(@PathVariable Long orderId) {
         try {
-            // URL a la que volverá Transbank después de pagar
-            String returnUrl = "http://localhost:5173/payment/commit";
+            // URL dinámica: En tu PC será localhost, en producción será la de Vercel
+            String returnUrl = frontendUrl + "/payment/commit";
+
             return ResponseEntity.ok(paymentService.initTransaction(orderId, returnUrl));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
