@@ -6,7 +6,7 @@ const isDevelopment = window.location.hostname === 'localhost';
 // Asignamos la URL automáticamente según el entorno
 const baseURL = isDevelopment
     ? 'http://localhost:8080/api/v1'
-    : 'http://ecommerce-java-production.up.railway.app/api/v1';
+    : 'https://ecommerce-java-production.up.railway.app/api/v1';
 
 const api = axios.create({
     baseURL: baseURL,
